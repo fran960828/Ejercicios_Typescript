@@ -1,0 +1,20 @@
+rol: Experto en typescript. consulta: Haz una documentación para una persona principiante con una explicación en forma de comentario al inicio y tras la explicación
+emplea un ejemplo sencillo para que quede más claro de los siguientes conceptos:
+ - Uso de types en primitivos como puede ser string, number,bolean...
+ - Diferencia entre declarar una variable y asignarle un valor, indicando lo que es una buena practica.
+ - Uso de any
+ - Uso de Union Types para que una variable pueda tomar valores distintos.
+ - Uso de array Types y sus distintas formas :string[],(string|number)[],Array<string|number>
+ - Uso de tuplas: [number]
+ - Uso de objetos:{name:string,age:number,hobbies:string[]}
+ - Uso de cualquier valor salvo null o undefined: let variable:{} "must not be null"
+ - uso de Record <string:number|string> para objetos 
+ - Uso de enum
+ - Uso de literal Types, Type alias.
+ - En funciones, declarar parametros,declarar return y tipos de return como void y never.
+
+
+Especificaciones:-La documentación debe contener la explicación detallada 
+de todo lo necesario para el uso de los conceptos a nivel profesional-Los ejemplos deben estar explicados con comentarios sobre lo que hacen en cada paso -El formato de entrega será en typescript. 
+Verificación:Revisa el contenido de la consulta para obtener el resultado deseado, recuerda que lo más importante es que los ejemplos estén bien explicados y 
+que los hagas de forma que se puedan probar en un archivo ts,  tomate el tiempo necesario para obtener el mejor resultado.
