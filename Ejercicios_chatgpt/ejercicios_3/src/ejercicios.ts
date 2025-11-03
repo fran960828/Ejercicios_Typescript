@@ -67,3 +67,78 @@ const empleado1: subordinados = {
   jornada: "completa",
   status: 2,
 };
+// ## 2️⃣ Union Types y protectores de tipo (`type guards`)
+
+// **Objetivo:** dominar el uso de uniones y aprender a escribir lógica segura basada en protecciones de tipo.
+
+// ### Ejercicios
+
+// 4. **Unión de respuesta API:**
+//    ```ts
+//    // Define dos tipos: ApiSuccess y ApiError con propiedades distintas.
+//    // Crea una función handleApiResponse que acepte un parámetro tipo ApiSuccess | ApiError.
+//    // Usa "in" o "typeof" para diferenciar los casos.
+//    ```
+type ApiSuccess = {
+  codeApi: number;
+  mensaje: string;
+};
+type ApiError = {
+  codeError: number;
+  errorMessage: string;
+};
+function handleApiResponse(respuesta: ApiSuccess | ApiError) {
+  if ("codeApi" in respuesta) {
+    console.log(respuesta.mensaje);
+  } else {
+    console.log(`codigo ${respuesta.codeError} --> ${respuesta.errorMessage}`);
+  }
+}
+
+let resp: ApiSuccess = {
+  codeApi: 200,
+  mensaje: "Información cargada correctamente",
+};
+//handleApiResponse(resp);
+
+// 5. **Unión de tipos primitivos:**
+//    ```ts
+//    // Crea una función printValue(value: string | number | boolean)
+//    // que imprima distinto texto según el tipo (usa typeof).
+//    ```
+
+function printValue(value: string | number | boolean) {
+  if (typeof value === "string") {
+    console.log("El valor es un texto");
+  } else if (typeof value === "number") {
+    console.log("El valor es un numero");
+  } else {
+    console.log("El valor es booleano");
+  }
+}
+// printValue(12);
+
+// 6. **Type Guard personalizado:**
+//    ```ts
+//    // Define un tipo Admin con propiedad 'role: "admin"' y otro tipo Guest con 'role: "guest"'.
+//    // Escribe una función isAdmin(user): user is Admin.
+//    // Úsala en un array de usuarios mixtos para filtrar solo los admins.
+//    ```
+type Role = "admin" | "guest" | "editor" | "manager";
+
+type User = { role: Role; name: string };
+
+function isAdmin(user: User): user is User & { role: "admin" } {
+  return user.role === "admin";
+}
+
+const users: User[] = [
+  { role: "admin", name: "Ana" },
+  { role: "guest", name: "Luis" },
+  { role: "manager", name: "Lucía" },
+  { role: "admin", name: "Carlos" },
+];
+
+const admins = users.filter(isAdmin);
+
+console.log(admins);
