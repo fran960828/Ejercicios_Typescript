@@ -31,13 +31,14 @@
 
 ---
 
-## Uso de *Intersection types* y comparación con *interfaces* con `extends`
+## Uso de _Intersection types_ y comparación con _interfaces_ con `extends`
 
-**Explicación:**  
-- Un *intersection type* combina tipos: `A & B` tiene todas las propiedades de `A` **y** `B`.  
-- `interface` con `extends` expresa lo mismo en la mayoría de casos: `interface C extends A, B {}`.  
+**Explicación:**
+
+- Un _intersection type_ combina tipos: `A & B` tiene todas las propiedades de `A` **y** `B`.
+- `interface` con `extends` expresa lo mismo en la mayoría de casos: `interface C extends A, B {}`.
 - Diferencias prácticas:
-  - `interface` permite _declaration merging_ (puedes declarar la misma interfaz en varios lugares y TypeScript las combina). `type` no.  
+  - `interface` permite _declaration merging_ (puedes declarar la misma interfaz en varios lugares y TypeScript las combina). `type` no.
   - `type` puede describir uniones, mapeos, tuplas complejas, etc. `interface` es solo para objetos (y contratos estructurales).
   - Cuando hay propiedades conflictivas incompatibles, la intersección puede volverse `never` (error de tipo).
 
@@ -53,8 +54,13 @@ const e1: EntityIntersection = {
   updatedAt: new Date(),
 };
 
-interface IWithId { id: string }
-interface IWithTimestamps { createdAt: Date; updatedAt: Date; }
+interface IWithId {
+  id: string;
+}
+interface IWithTimestamps {
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 interface IEntity extends IWithId, IWithTimestamps {}
 
@@ -67,11 +73,12 @@ const e2: IEntity = {
 
 ---
 
-## Uso de *Union types* y empleo de protectores de tipo
+## Uso de _Union types_ y empleo de protectores de tipo
 
-**Explicación:**  
-- Una unión `A | B` significa que una variable puede ser del tipo `A` **o** del tipo `B`.  
-- Para operar con seguridad sobre una unión usamos *type guards* (protectores): `typeof`, `instanceof`, `in`, discriminante manual o funciones personalizadas.
+**Explicación:**
+
+- Una unión `A | B` significa que una variable puede ser del tipo `A` **o** del tipo `B`.
+- Para operar con seguridad sobre una unión usamos _type guards_ (protectores): `typeof`, `instanceof`, `in`, discriminante manual o funciones personalizadas.
 
 ```ts
 type Success = { ok: true; value: string };
@@ -92,8 +99,9 @@ function handle(result: Result) {
 
 ## Discriminated Unions
 
-**Explicación:**  
-- Una discriminated union usa una **propiedad literal** común (ej. `type` o `kind`) con valores literales para que TypeScript pueda hacer *narrowing* automáticamente.
+**Explicación:**
+
+- Una discriminated union usa una **propiedad literal** común (ej. `type` o `kind`) con valores literales para que TypeScript pueda hacer _narrowing_ automáticamente.
 
 ```ts
 type Square = { kind: "square"; size: number };
@@ -104,9 +112,12 @@ type Shape = Square | Circle | Rectangle;
 
 function area(s: Shape): number {
   switch (s.kind) {
-    case "square": return s.size * s.size;
-    case "circle": return Math.PI * s.radius ** 2;
-    case "rectangle": return s.width * s.height;
+    case "square":
+      return s.size * s.size;
+    case "circle":
+      return Math.PI * s.radius ** 2;
+    case "rectangle":
+      return s.width * s.height;
     default:
       const _exhaustive: never = s;
       return _exhaustive;
@@ -121,12 +132,16 @@ function area(s: Shape): number {
 ```ts
 class Dog {
   constructor(public name: string) {}
-  bark() { console.log("Woof!"); }
+  bark() {
+    console.log("Woof!");
+  }
 }
 
 class Cat {
   constructor(public name: string) {}
-  meow() { console.log("Meow!"); }
+  meow() {
+    console.log("Meow!");
+  }
 }
 
 type Pet = Dog | Cat;
@@ -144,11 +159,20 @@ function interact(pet: Pet) {
 ```ts
 type User = { id: string; name: string; age?: number };
 
-function analyzeUser(raw: unknown): { ok: boolean; user?: User; reason?: string } {
-  if (typeof raw !== "object" || raw === null) return { ok: false, reason: "No es objeto" };
+function analyzeUser(raw: unknown): {
+  ok: boolean;
+  user?: User;
+  reason?: string;
+} {
+  if (typeof raw !== "object" || raw === null)
+    return { ok: false, reason: "No es objeto" };
   const obj = raw as Record<string, unknown>;
   if (typeof obj.id === "string" && typeof obj.name === "string") {
-    const user: User = { id: obj.id, name: obj.name, age: typeof obj.age === "number" ? obj.age : undefined };
+    const user: User = {
+      id: obj.id,
+      name: obj.name,
+      age: typeof obj.age === "number" ? obj.age : undefined,
+    };
     return { ok: true, user };
   }
   return { ok: false, reason: "Faltan propiedades id/name" };
@@ -184,6 +208,10 @@ const s2 = format(new Date(), "es-ES");
 
 ## Index Types y comparación con Record
 
+# Nos permite crear incorporar nuevas propiedades que no están directamente definidas en el type, se puede hacer usando los corchetes como vemos en
+
+# ByMapped o con record directamente. De esta forma controlamos los typos y conseguimos un mayor dinamismo
+
 ```ts
 type Keys = "a" | "b" | "c";
 
@@ -192,21 +220,17 @@ type ByRecord = Record<Keys, number>;
 
 const obj1: ByMapped = { a: 1, b: 2, c: 3 };
 const obj2: ByRecord = { a: 4, b: 5, c: 6 };
-
-type PartialReadonly<T> = { readonly [P in keyof T]?: T[P] };
-type UserShape = { id: string; name: string };
-type PRUser = PartialReadonly<UserShape>;
 ```
 
 ---
 
 ## Constant Types con `as const`
 
-```ts
-const arrConst = ["red", "green"] as const;
-type Color = typeof arrConst[number]; // "red" | "green"
+# se emplean para obtener arrays mas cerrados, lo de abajo funciona como un readonly de modo que el array es fijo e invariable.
 
-const config2 = { mode: "dev", port: 3000 } as const;
+```ts
+const role: string[] = ["admin", "guest", "user"] as const;
+let firstrole = role[0];
 ```
 
 ---
@@ -218,7 +242,7 @@ type Theme = { color: string; spacing: number };
 
 const themes = {
   light: { color: "#fff", spacing: 8 },
-  dark: { color: "#000", spacing: 8 }
+  dark: { color: "#000", spacing: 8 },
 } satisfies Record<"light" | "dark", Theme>;
 
 type Config = { mode: "dev" | "prod"; port: number };
@@ -233,4 +257,4 @@ const cfg = { mode: "dev", port: 3000 } satisfies Config;
 - Usa **outsourced guards** cuando necesites validación detallada.
 - Usa `satisfies` en configuraciones para preservar literales y validar tipos.
 - `Record` para mapas simples, mapped types para transformaciones complejas.
-- Escribe tests para validar *guards* y casos límite.
+- Escribe tests para validar _guards_ y casos límite.
