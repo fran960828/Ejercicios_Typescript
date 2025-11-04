@@ -203,32 +203,6 @@ Cada conjunto incluye objetivos de aprendizaje y retos con dificultad creciente.
    // Escribe una función navigate(route: Route): void que imprima la ruta correspondiente.
    ```
 
----
-
-## 9️⃣ Uso de `satisfies`
-
-**Objetivo:** verificar estructuras sin perder información de tipo literal.
-
-### Ejercicios
-
-19. **Configuración validada:**
-   ```ts
-   // Crea un tipo AppConfig con { mode: "dev" | "prod"; debug: boolean }.
-   // Declara const config = { mode: "dev", debug: true } satisfies AppConfig.
-   // Cambia 'mode' a "development" y observa el error de verificación.
-   ```
-
-20. **Mapa de endpoints:**
-   ```ts
-   // Crea un tipo Endpoint = { path: string; secure: boolean }.
-   // Declara const endpoints = {
-   //   login: { path: "/login", secure: false },
-   //   user: { path: "/user", secure: true }
-   // } satisfies Record<string, Endpoint>;
-   // Usa typeof endpoints para crear un tipo inferido EndpointKey.
-   ```
-
----
 
 ## 🔟 Proyecto final: **Mini sistema tipado**
 

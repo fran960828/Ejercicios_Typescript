@@ -494,7 +494,7 @@ const traductor: TranlationRecord = {
 function translate(lang: Languages) {
   return traductor[lang];
 }
-console.log(translate("es"));
+//console.log(translate("es"));
 
 // 16. **Transformador genérico:**
 //    ```ts
@@ -504,3 +504,181 @@ console.log(translate("es"));
 //    // Implementa una función applyTransform<T>(t: Transform<T>): T
 //    ```
 // Pendiente cuando aprendamos genericos
+
+
+//## 8️⃣ Constant Types con `as const`
+//
+//**Objetivo:** trabajar con literales y tuplas inmutables para mejorar la inferencia de tipos.
+//
+//### Ejercicios
+//
+//17. **Lista de roles:**
+//   ```ts
+//   // Declara const roles = ["admin", "editor", "viewer"] as const.
+//   // Crea un tipo Role = typeof roles[number].
+//   // Escribe una función assignRole(user: string, role: Role) que solo acepte esos valores.
+//   ```
+const roles=['admin','editor','viewer'] as const;
+type UserRole=typeof roles[number]
+
+function assignRole(user: string, role: UserRole) {
+  if (!roles.includes(role)) {
+    throw new Error(`El rol '${role}' no es válido`);
+  }
+  return { user, role };
+}
+
+//console.log(assignRole('Francisco','admin'))
+//console.log(assignRole('Ivan','viewer'))
+//console.log(assignRole('mari','editor'))
+
+
+
+
+
+//18. **Sistema de rutas:**
+//   ```ts
+//   // Crea const routes = { home: "/", about: "/about", dashboard: "/dashboard" } as const.
+//   // Crea un tipo Route = keyof typeof routes.
+//   // Escribe una función navigate(route: Route): void que imprima la ruta correspondiente.
+//   ```
+const routes={ home: "/", about: "/about", dashboard: "/dashboard" } as const
+type Route= keyof typeof routes
+
+function navigate(route:Route):void{
+  console.log(routes[route])
+}
+//navigate('about')
+
+//## 🔟 Proyecto final: **Mini sistema tipado**
+//
+//**Objetivo:** integrar todos los conceptos.
+//
+//### Descripción del reto:
+//
+//Crea un pequeño módulo TypeScript que modele un sistema de órdenes de compra tipado:
+//
+//- Tipos base:
+//  - `UserBase`, `ProductBase`, `OrderBase`.
+type UsuarioBase={
+  id:string,
+  name:string,
+  email:string
+}
+type ProductoBase={
+  idProducto:string,
+  name:string,
+  price:number
+}
+type OrderBase={
+  id:string,
+  userId:string,
+  products:ProductoBase[]
+}
+
+//- Usa **Intersection types** para combinar datos de usuario con metadatos.
+type ExtraData={
+  registerDate:Date,
+  updatedDate?:Date
+}
+type UserExtra=UsuarioBase & ExtraData
+let usuario1:UserExtra={
+id:'1u',
+name:'Lucas',
+email:'lucas@gmail.com',
+registerDate:new Date()
+}
+let producto1:ProductoBase={
+  idProducto:'1p',
+  name:'vino',
+  price:3
+}
+let producto2:ProductoBase={
+  idProducto:'2p',
+  name:'aceite',
+  price:5
+}
+let producto3:ProductoBase={
+  idProducto:'3p',
+  name:'almendras',
+  price:4
+}
+
+
+//- Usa **Union types** y **discriminated unions** para representar estados del pedido (`"pending" | "paid" | "cancelled"`).
+type PendingOrder= OrderBase & {status:'pending'}
+type PaidOrder= OrderBase & {status:'paid',paymentDate:Date}
+type CanceledOrder= OrderBase & {status:'cancelled', reason:string}
+
+type Order = PendingOrder | PaidOrder | CanceledOrder
+
+let order1:Order={
+  id:'1o',
+  userId:usuario1.id,
+  products:[producto1,producto2],
+  status:'paid',
+  paymentDate:new Date()
+}
+
+let order2:Order={
+  id:'2o',
+  userId:usuario1.id,
+  products:[producto1,producto3],
+  status:'paid',
+  paymentDate:new Date()
+}
+let order3:Order={
+  id:'3o',
+  userId:usuario1.id,
+  products:[producto2],
+  status:'pending',
+}
+let order4:Order={
+  id:'4o',
+  userId:usuario1.id,
+  products:[producto2],
+  status:'cancelled',
+  reason:'llego tarde'
+}
+//- Define un **type guard** `isPaidOrder(order): order is PaidOrder`.
+function isPaidOrder(order:Order):order is PaidOrder{
+  return order.status==='paid'
+}
+let listOrder:Order[]=[order1,order2,order3,order4]
+let paidsOrders=listOrder.filter(isPaidOrder)
+
+//- Añade una **función sobrecargada** `getOrderSummary()` que acepte:
+//  - Un solo pedido → devuelve string.
+//  - Un array de pedidos → devuelve string[].
+function getOrderSummary(order: Order): string;
+function getOrderSummary(order: Order[]): string[];
+function getOrderSummary(order: Order | Order[]): string | string[] {
+  if (Array.isArray(order)) {
+    return order.map((or) =>
+      `La orden ${or.id} para el usuario ${or.userId} contiene los productos: ${or.products
+        .map((p) => p.name)
+        .join(', ')}`
+    );
+  } else {
+    return `La orden ${order.id} para el usuario ${order.userId} contiene los productos: ${order.products
+      .map((p) => p.name)
+      .join(', ')}`;
+  }
+}
+
+
+
+
+//- Define un **mapa tipado** con `Record<Status, number>` para contar pedidos.
+type status= 'pending' | 'paid' | 'cancelled'
+
+const mapaTipado:Record<status,number>={
+  pending:0,
+  paid:0,
+  cancelled:0
+}
+for (const order of listOrder) {
+  mapaTipado[order.status] += 1;
+}
+
+
