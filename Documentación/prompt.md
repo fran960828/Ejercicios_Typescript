@@ -1,0 +1,4 @@
+- uso de generic types como Array<string> en lugar de string[], estos son tipos ya predefinidos.
+- uso de generic types en nuestros propios types como: type DataStore<T>
+- uso de funciones genericas con un marcador de posición <T>
+- uso de generic types o funciones genericas con varios marcadores de posición <T,U>
