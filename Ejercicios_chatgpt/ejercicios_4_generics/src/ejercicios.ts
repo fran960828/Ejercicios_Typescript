@@ -188,7 +188,128 @@ repo.save({ id: "u3", name: "Ana", age: 22 });
 
 // Recuperamos un usuario por su id
 const encontrado = repo.findById("u2");
-console.log("🔍 Usuario encontrado:", encontrado);
+//console.log("🔍 Usuario encontrado:", encontrado);
 
 // Listamos todos los usuarios guardados
-console.log("📦 Todos los usuarios:", repo.findAll());
+//console.log("📦 Todos los usuarios:", repo.findAll());
+
+
+//### 🧩 Ejercicio 10: Utilidad Genérica `pluck`
+//**Objetivo:** Usar *keyof* y constraints con propiedades dinámicas.
+//
+//**Instrucción:**
+//Crea una función `pluck<T, K extends keyof T>(items: T[], key: K): T[K][]` que extraiga el valor de una 
+//propiedad específica de todos los objetos del array.
+
+function pluck<T,K extends keyof T>(items:T[],key:K):T[K][]{
+  let lista=[]
+ for (let it of items){
+    lista.push(it[key])
+ }
+ return lista
+}
+
+const usuarios = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Luis" },
+];
+//console.log(pluck(usuarios,'name'))
+
+
+//### 🧩 Ejercicio 11: Cache Genérica con Expiración
+//**Objetivo:** Aplicar clases genéricas con comportamiento complejo.
+//
+//**Instrucción:**
+//Crea una clase `Cache<T>` con:
+//- Método `set(key: string, value: T, ttlMs: number)`
+//- Método `get(key: string): T | undefined` (expira automáticamente pasado el tiempo indicado)
+//
+//Usa `Map` internamente y controla el tiempo de expiración con `Date.now()`
+
+class Cache<T>{
+  private mapa=new Map<string,{value:T,expire:number}>()
+  
+  set(key:string,value:T,ttlMs:number){
+    let expire=Date.now()+ttlMs
+    this.mapa.set(key,{value,expire})
+  }
+  get(key:string):T|undefined{
+    const item=this.mapa.get(key)
+    if (!item){
+      return undefined
+    }
+
+    if (Date.now()>item.expire){
+      this.mapa.delete(key)
+      return undefined
+    }
+
+    return item.value
+  }
+}
+
+let cache=new Cache<string>()
+
+cache.set('nombre','Ana',20*1000)
+
+//console.log(cache.get('nombre'))
+//
+//console.log(cache.get('edad'))
+//
+//setTimeout(() => {
+//  console.log(cache.get('nombre'))
+//}, 30*1000);
+
+//### 🧩 Ejercicio 12: Transformador Flexible `<T, U>`
+//**Objetivo:** Crear funciones genéricas con transformación de tipos.
+//
+//**Instrucción:**
+//Implementa una función `mapArray<T, U>(arr: T[], fn: (item: T) => U): U[]`.
+//
+//```ts
+//// Ejemplo:
+//const numbers = [1, 2, 3];
+//const doubled = mapArray(numbers, n => n * 2); // [2, 4, 6]
+
+function mapArray<T,U>(array:T[],fn:(item:T)=>U):U[]{
+  return array.map((item)=>fn(item))
+}
+//console.log(mapArray<number,number>([1,2,3,4],(item)=>item*3))
+
+//### 🧩 Ejercicio 13: Validación Tipada Avanzada
+//**Objetivo:** Dominar constraints con condiciones.
+//
+//**Instrucción:**
+//Crea una función `validateField<T extends object, K extends keyof T>(obj: T, key: K): boolean` que verifique que el campo no sea `null` ni `undefined`.
+//
+//```ts
+//const person = { name: "Ana", age: 25 };
+//validateField(person, "name"); // true
+//validateField(person, "email"); // Error: 'email' no existe en 'person'
+//```
+
+function validateField<T extends object,K extends keyof T>(obj:T,key:K):boolean{
+  if (obj[key]){
+    return true
+  }
+  return false
+}
+
+const student={name:'Fran',age:29,discipline:'fullstack'}
+//console.log(validateField(student,'age'))
+//console.log(validateField(student,'nacionality'))
+
+//### 🧩 Ejercicio 14: Builder Genérico
+//**Objetivo:** Simular un patrón de diseño usando genéricos.
+//
+//**Instrucción:**
+//Crea una clase `Builder<T>` que permita construir objetos paso a paso con métodos encadenados, y un método `build(): T` que devuelva el resultado.
+//
+//```ts
+//interface User { id: number; name: string; active: boolean }
+//const user = new Builder<User>()
+//  .set("id", 1)
+//  .set("name", "Lucía")
+//  .set("active", true)
+//  .build();
+//```
