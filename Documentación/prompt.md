@@ -1,4 +1,5 @@
-- uso de generic types como Array<string> en lugar de string[], estos son tipos ya predefinidos.
-- uso de generic types en nuestros propios types como: type DataStore<T>
-- uso de funciones genericas con un marcador de posición <T>
-- uso de generic types o funciones genericas con varios marcadores de posición <T,U>
+- Uso de typeof para asignar a un type un determinadas características que hereda de por ejemplo un objeto preexistente, se trata de derivar un type a otro type.
+- Uso de keyof para obtener un type derivado con las keys del objeto del cual deriva, asi como el uso de keyof en generics.
+- Uso de indexed-access-types para obtener una parte de un typo ya definido ya sea a traves de la clave de la propiedad o en caso de ser un array a través de ese type y entre corchetes pondríamos number, de forma que nos quedaríamo con un elemento de ese array.
+- Uso de mapped types, funcionalidades como poner los elementos en modo opcional o como readonly
+- Uso de template-literal-types
