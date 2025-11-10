@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    // === File Layout ===
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // === ECMAScript Decorators ===
+    // ⬇️ Activar soporte de decorators ECMAScript estándar
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "useDefineForClassFields": true, // Importante para compatibilidad de inicialización
+
+    // === Environment Settings ===
+    "target": "ESNext",
+    "module": "NodeNext",
+    "lib": ["ES2022", "DOM", "ESNext"],
+
+    // === Output ===
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // === Typechecking ===
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+
+    // === Module & Syntax ===
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force"
+
+    // === Optional Quality Settings ===
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
